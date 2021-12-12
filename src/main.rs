@@ -5,7 +5,17 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use std::time::Duration;
 
+use std::collections::HashMap;
+
+mod chip8;
+
 pub fn main() -> Result<(), String> {
+
+    let mut cpu = chip8::Chip8::new(&vec!["Hello".to_string()]);
+
+    cpu.run_cycle();
+
+
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
 
