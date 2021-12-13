@@ -4,3 +4,6 @@
 
 # SDL2 DLL for Windows
 SDL2.dll
+
+# ROM's Folder
+roms/

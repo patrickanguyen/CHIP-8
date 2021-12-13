@@ -5,22 +5,22 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use std::time::Duration;
 
-use std::collections::HashMap;
+use std::fs;
 
 mod chip8;
 
 pub fn main() -> Result<(), String> {
+    let rom_path = "roms/test_opcode.ch8";
+    let rom: Vec<u8> = fs::read(rom_path).expect("Failed to open ROM");
 
-    let mut cpu = chip8::Chip8::new(&vec!["Hello".to_string()]);
-
+    let mut cpu = chip8::Chip8::new(&rom);
     cpu.run_cycle();
-
 
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
 
     let window = video_subsystem
-        .window("CHIP-8 Emulator", 800, 600)
+        .window("CHIP-8 Emulator", 640, 320)
         .position_centered()
         .opengl()
         .build()
@@ -28,7 +28,7 @@ pub fn main() -> Result<(), String> {
 
     let mut canvas = window.into_canvas().build().map_err(|e| e.to_string())?;
 
-    canvas.set_draw_color(Color::RGB(77, 166, 255));
+    canvas.set_draw_color(Color::RGB(76, 166, 255));
     canvas.clear();
     canvas.present();
     let mut event_pump = sdl_context.event_pump()?;
