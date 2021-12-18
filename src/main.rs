@@ -7,13 +7,13 @@ use std::time::Duration;
 
 use std::fs;
 
-mod chip8;
+use chip8_lib::chip8::cpu::Cpu;
 
 pub fn main() -> Result<(), String> {
     let rom_path = "roms/test_opcode.ch8";
     let rom: Vec<u8> = fs::read(rom_path).expect("Failed to open ROM");
 
-    let mut cpu = chip8::Chip8::new(&rom);
+    let mut cpu = Cpu::new(&rom);
     cpu.run_cycle();
 
     let sdl_context = sdl2::init()?;
