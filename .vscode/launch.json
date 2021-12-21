@@ -7,15 +7,34 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'chip8-emulator'",
+            "name": "Debug unit tests in library 'chip8_lib'",
             "cargo": {
                 "args": [
-                    "build",
-                    "--bin=chip8-emulator",
+                    "test",
+                    "--no-run",
+                    "--lib",
                     "--package=chip8-emulator"
                 ],
                 "filter": {
-                    "name": "chip8-emulator",
+                    "name": "chip8_lib",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'chip8'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=chip8",
+                    "--package=chip8-emulator"
+                ],
+                "filter": {
+                    "name": "chip8",
                     "kind": "bin"
                 }
             },
@@ -25,17 +44,36 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'chip8-emulator'",
+            "name": "Debug unit tests in executable 'chip8'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=chip8-emulator",
+                    "--bin=chip8",
                     "--package=chip8-emulator"
                 ],
                 "filter": {
-                    "name": "chip8-emulator",
+                    "name": "chip8",
                     "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'cpu_test'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=cpu_test",
+                    "--package=chip8-emulator"
+                ],
+                "filter": {
+                    "name": "cpu_test",
+                    "kind": "test"
                 }
             },
             "args": [],

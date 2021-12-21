@@ -3,6 +3,7 @@ extern crate sdl2;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
+use sdl2::rect::Point;
 use std::time::Duration;
 
 use std::fs;
@@ -14,7 +15,6 @@ pub fn main() -> Result<(), String> {
     let rom: Vec<u8> = fs::read(rom_path).expect("Failed to open ROM");
 
     let mut cpu = Cpu::new(&rom);
-    cpu.run_cycle();
 
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
@@ -28,9 +28,10 @@ pub fn main() -> Result<(), String> {
 
     let mut canvas = window.into_canvas().build().map_err(|e| e.to_string())?;
 
-    canvas.set_draw_color(Color::RGB(76, 166, 255));
+    canvas.set_draw_color(Color::RGB(0, 0, 0));
     canvas.clear();
     canvas.present();
+
     let mut event_pump = sdl_context.event_pump()?;
 
     'running: loop {
@@ -45,9 +46,28 @@ pub fn main() -> Result<(), String> {
             }
         }
 
-        canvas.clear();
-        canvas.present();
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
+        // TODO: REMOVE IF STATEMENT
+        // DEBUG STATEMENT
+        if !cpu.draw_flag {
+            cpu.run_cycle();
+        }
+
+        if cpu.draw_flag {
+            canvas.set_draw_color(Color::RGB(255, 255, 255));
+
+            for x in 0..cpu.display_buffer.len() {
+                for y in 0..cpu.display_buffer[x].len() {
+                    if cpu.display_buffer[x][y] == 1 {
+                        canvas.draw_point(Point::new(x as i32, y as i32))?;
+                    }
+                }
+            }
+
+            canvas.present();
+            // cpu.draw_flag = false;
+        }
+
+        ::std::thread::sleep(Duration::new(0, 50_000_000u32 / 3));
         // The rest of the game loop goes here...
     }
 

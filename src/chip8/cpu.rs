@@ -135,6 +135,8 @@ impl Cpu {
 
         // Execute
         self.execute(instr_type, instr);
+
+        // Handle timers
     }
 
     /// Fetch instruction from memory
@@ -210,7 +212,10 @@ impl Cpu {
     fn execute(&mut self, instr_type: InstructionType, instr: Instruction) {
         match self.instructions.get(&instr_type) {
             Some(v) => v(self, instr),
-            None => panic!("Cannot execute instruction: 0x{:X}", instr.raw_instr),
+            None => panic!(
+                "Cannot execute instruction: 0x{:X} at 0x{:X}",
+                instr.raw_instr, self.pc
+            ),
         }
     }
 }
