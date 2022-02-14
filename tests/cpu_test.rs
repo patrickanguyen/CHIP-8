@@ -77,6 +77,34 @@ fn test_se_vk_kk_false() {
 }
 
 #[test]
+fn test_sne_vx_nn_true() {
+    // 0x200: SNE 0x5 0x5
+    // 0x202: Dummy INSTRUCTION
+    // 0x204: Dummy INSTRUCTION
+    const ROM: [u8; 6] = [0x45, 0x05, 0x00, 0x00, 0x00, 0x00];
+    const EXPECTED_PC: u16 = 0x204;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_sne_vx_nn_false() {
+    // 0x200: SNE 0x5 0x0
+    // 0x202: Dummy INSTRUCTION
+    // 0x204: Dummy INSTRUCTION
+    const ROM: [u8; 6] = [0x45, 0x00, 0x00, 0x00, 0x00, 0x00];
+    const EXPECTED_PC: u16 = 0x202;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
 fn test_ld_vx_kk() {
     // 0x200: LD 0x4 0x23
     // 0x202: DUMMY INSTRUCTION

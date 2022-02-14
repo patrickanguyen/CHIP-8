@@ -93,6 +93,10 @@ impl Cpu {
                     handlers::se_vx_kk as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
                 (
+                    InstructionType::SneVxKk,
+                    handlers::sne_vx_kk as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
                     InstructionType::LdVxKk,
                     handlers::ld_vx_kk as fn(cpu: &mut Cpu, instr: Instruction),
                 ),

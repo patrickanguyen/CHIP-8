@@ -30,6 +30,15 @@ pub fn se_vx_kk(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Skip next instruction if Vx != kk
+pub fn sne_vx_kk(cpu: &mut Cpu, instr: Instruction) {
+    if cpu.gp_reg[instr.x as usize] != instr.kk as u8 {
+        cpu.pc += 4;
+        return;
+    }
+    cpu.pc += 2;
+}
+
 /// Load value NN to register VX
 pub fn ld_vx_kk(cpu: &mut Cpu, instr: Instruction) {
     cpu.gp_reg[instr.x as usize] = instr.kk as u8;
