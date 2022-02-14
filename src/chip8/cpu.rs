@@ -1,22 +1,15 @@
 use std::collections::HashMap;
 
-const MEMORY_SIZE: usize = 4096;
-const GP_REGISTER_SIZE: usize = 16;
-const STACK_SIZE: usize = 16;
-const KEYPAD_SIZE: usize = 16;
-const PROGRAM_START: u16 = 0x200;
-const DISPLAY_HEIGHT: usize = 32;
-const DISPLAY_WIDTH: usize = 64;
-
+use super::constants;
 use super::handlers;
 use super::instructions::{Instruction, InstructionType};
 
 pub struct Cpu {
-    pub memory: [u8; MEMORY_SIZE],
-    pub gp_reg: [u8; GP_REGISTER_SIZE],
+    pub memory: [u8; constants::MEMORY_SIZE],
+    pub gp_reg: [u8; constants::GP_REGISTER_SIZE],
     pub pc: u16,
     pub sp: u16,
-    pub stack: [u16; STACK_SIZE],
+    pub stack: [u16; constants::STACK_SIZE],
 
     pub i_reg: u16,
 
@@ -24,9 +17,9 @@ pub struct Cpu {
     pub delay_timer: u8,
     pub sound_timer: u8,
 
-    pub keypad: [u8; KEYPAD_SIZE],
+    pub keypad: [u8; constants::KEYPAD_SIZE],
 
-    pub display_buffer: [[u8; DISPLAY_WIDTH]; DISPLAY_HEIGHT],
+    pub display_buffer: [[u8; constants::DISPLAY_WIDTH]; constants::DISPLAY_HEIGHT],
     pub draw_flag: bool,
 
     pub instructions: HashMap<InstructionType, fn(&mut Cpu, Instruction)>,
@@ -35,7 +28,7 @@ pub struct Cpu {
 impl Cpu {
     /// Initialize CPU with ROM
     pub fn new(rom: &[u8]) -> Cpu {
-        let mut memory = [0; MEMORY_SIZE];
+        let mut memory = [0; constants::MEMORY_SIZE];
 
         // Load fontset
         const FONT_SET: [u8; 80] = [
@@ -60,26 +53,26 @@ impl Cpu {
         memory[0..FONT_SET.len()].copy_from_slice(&FONT_SET);
 
         // Load ROM to program memory
-        let rom_start: usize = PROGRAM_START as usize;
+        let rom_start: usize = constants::PROGRAM_START as usize;
         let rom_end: usize = rom_start + rom.len();
 
         memory[rom_start..rom_end].copy_from_slice(rom);
 
         Cpu {
             memory,
-            gp_reg: [0; GP_REGISTER_SIZE],
-            pc: PROGRAM_START,
+            gp_reg: [0; constants::GP_REGISTER_SIZE],
+            pc: constants::PROGRAM_START,
             sp: 0,
-            stack: [0; STACK_SIZE],
+            stack: [0; constants::STACK_SIZE],
 
             i_reg: 0,
 
             delay_timer: 0,
             sound_timer: 0,
 
-            keypad: [0; KEYPAD_SIZE],
+            keypad: [0; constants::KEYPAD_SIZE],
 
-            display_buffer: [[0; DISPLAY_WIDTH]; DISPLAY_HEIGHT],
+            display_buffer: [[0; constants::DISPLAY_WIDTH]; constants::DISPLAY_HEIGHT],
             draw_flag: false,
 
             instructions: HashMap::from([

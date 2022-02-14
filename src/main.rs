@@ -3,11 +3,13 @@ extern crate sdl2;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
-use sdl2::rect::Point;
+use sdl2::rect::Rect;
 use std::time::Duration;
 
 use std::fs;
+use std::thread::sleep;
 
+use chip8_lib::chip8::constants;
 use chip8_lib::chip8::cpu::Cpu;
 
 pub fn main() -> Result<(), String> {
@@ -20,7 +22,11 @@ pub fn main() -> Result<(), String> {
     let video_subsystem = sdl_context.video()?;
 
     let window = video_subsystem
-        .window("CHIP-8 Emulator", 640, 320)
+        .window(
+            "CHIP-8 Emulator",
+            (constants::DISPLAY_WIDTH * constants::DISPLAY_SCALE) as u32,
+            (constants::DISPLAY_HEIGHT * constants::DISPLAY_SCALE) as u32,
+        )
         .position_centered()
         .opengl()
         .build()
@@ -28,7 +34,7 @@ pub fn main() -> Result<(), String> {
 
     let mut canvas = window.into_canvas().build().map_err(|e| e.to_string())?;
 
-    canvas.set_draw_color(Color::RGB(0, 0, 0));
+    canvas.set_draw_color(Color::BLACK);
     canvas.clear();
     canvas.present();
 
@@ -46,28 +52,29 @@ pub fn main() -> Result<(), String> {
             }
         }
 
-        // TODO: REMOVE IF STATEMENT
-        // DEBUG STATEMENT
-        if !cpu.draw_flag {
-            cpu.run_cycle();
-        }
+        cpu.run_cycle();
 
         if cpu.draw_flag {
-            canvas.set_draw_color(Color::RGB(255, 255, 255));
+            canvas.set_draw_color(Color::WHITE);
 
             for x in 0..cpu.display_buffer.len() {
                 for y in 0..cpu.display_buffer[x].len() {
                     if cpu.display_buffer[x][y] == 1 {
-                        canvas.draw_point(Point::new(x as i32, y as i32))?;
+                        canvas.fill_rect(Rect::new(
+                            (x * constants::DISPLAY_SCALE) as i32,
+                            (y * constants::DISPLAY_SCALE) as i32,
+                            constants::DISPLAY_SCALE as u32,
+                            constants::DISPLAY_SCALE as u32,
+                        ))?;
                     }
                 }
             }
 
             canvas.present();
-            // cpu.draw_flag = false;
+            cpu.draw_flag = false;
         }
 
-        ::std::thread::sleep(Duration::new(0, 50_000_000u32 / 3));
+        sleep(Duration::new(0, 50_000_000u32 / 3));
         // The rest of the game loop goes here...
     }
 
