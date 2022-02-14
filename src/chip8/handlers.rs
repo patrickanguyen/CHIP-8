@@ -39,6 +39,15 @@ pub fn sne_vx_kk(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Skip next instruction if Vx == Vy
+pub fn se_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    if cpu.gp_reg[instr.x as usize] == cpu.gp_reg[instr.y as usize] {
+        cpu.pc += 4;
+        return;
+    }
+    cpu.pc += 2;
+}
+
 /// Load value NN to register VX
 pub fn ld_vx_kk(cpu: &mut Cpu, instr: Instruction) {
     cpu.gp_reg[instr.x as usize] = instr.kk as u8;
@@ -47,7 +56,8 @@ pub fn ld_vx_kk(cpu: &mut Cpu, instr: Instruction) {
 
 /// Add value kk to register VX and store result in VX
 pub fn add_vx_kk(cpu: &mut Cpu, instr: Instruction) {
-    cpu.gp_reg[instr.x as usize] += instr.kk as u8;
+    let sum = cpu.gp_reg[instr.x as usize] as u16 + instr.kk;
+    cpu.gp_reg[instr.x as usize] = sum as u8;
     cpu.pc += 2;
 }
 
@@ -81,5 +91,14 @@ pub fn drw_vx_vy_n(cpu: &mut Cpu, instr: Instruction) {
     }
 
     cpu.draw_flag = true;
+    cpu.pc += 2;
+}
+
+/// Skip next instruction if Vx != Vy
+pub fn sne_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    if cpu.gp_reg[instr.x as usize] != cpu.gp_reg[instr.y as usize] {
+        cpu.pc += 4;
+        return;
+    }
     cpu.pc += 2;
 }

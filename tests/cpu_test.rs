@@ -105,6 +105,35 @@ fn test_sne_vx_nn_false() {
 }
 
 #[test]
+fn test_se_vx_vy_true() {
+    // 0x200: SE 0x5 0x5
+    // 0x202: Dummy INSTRUCTION
+    // 0x204: Dummy INSTRUCTION
+    const ROM: [u8; 6] = [0x55, 0x05, 0x00, 0x00, 0x00, 0x00];
+    const EXPECTED_PC: u16 = 0x204;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_se_vx_vy_false() {
+    // 0x200: LD 0x0 0xAB
+    // 0x202: SE 0x0 0x50
+    // 0x204: Dummy INSTRUCTION
+    const ROM: [u8; 6] = [0x60, 0xAB, 0x50, 0x50, 0x00, 0x00];
+    const EXPECTED_PC: u16 = 0x204;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
 fn test_ld_vx_kk() {
     // 0x200: LD 0x4 0x23
     // 0x202: DUMMY INSTRUCTION
@@ -168,4 +197,35 @@ fn drw_vx_vy_n() {
     assert_eq!(cpu.pc, EXPECTED_PC);
     assert_eq!(cpu.gp_reg[0xf], EXPECTED_VF);
     // TODO: ADD ASSERT FOR DISPLAY_BUFFER
+}
+
+#[test]
+fn test_sne_vx_vy_true() {
+    // 0x200: LD 0x0 0xAB
+    // 0x202: SNE 0x0 0x50
+    // 0x204: Dummy INSTRUCTION
+    const ROM: [u8; 6] = [0x60, 0xAB, 0x90, 0x50, 0x00, 0x00];
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_sne_vx_vy_false() {
+    // 0x200: LD 0x0 0xAB
+    // 0x202: LD 0x5 0xAB
+    // 0x204: SNE 0x0 0x50
+    const ROM: [u8; 6] = [0x60, 0xAB, 0x65, 0xAB, 0x90, 0x50];
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
 }
