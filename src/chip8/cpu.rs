@@ -19,7 +19,7 @@ pub struct Cpu {
 
     pub keypad: [u8; constants::KEYPAD_SIZE],
 
-    pub display_buffer: [[u8; constants::DISPLAY_WIDTH]; constants::DISPLAY_HEIGHT],
+    pub display_buffer: [[u8; constants::DISPLAY_HEIGHT]; constants::DISPLAY_WIDTH],
     pub draw_flag: bool,
 
     pub instructions: HashMap<InstructionType, fn(&mut Cpu, Instruction)>,
@@ -72,7 +72,7 @@ impl Cpu {
 
             keypad: [0; constants::KEYPAD_SIZE],
 
-            display_buffer: [[0; constants::DISPLAY_WIDTH]; constants::DISPLAY_HEIGHT],
+            display_buffer: [[0; constants::DISPLAY_HEIGHT]; constants::DISPLAY_WIDTH],
             draw_flag: false,
 
             instructions: HashMap::from([
