@@ -6,7 +6,7 @@ fn test_ret() {
     // 0x202: DUMMY INSTRUCTION
     // 0x204: RET
     const ROM: [u8; 6] = [0x22, 0x04, 0x00, 0x00, 0x00, 0xEE];
-    const EXPECTED_PC: u16 = 0x200;
+    const EXPECTED_PC: u16 = 0x202;
 
     let mut cpu = Cpu::new(&ROM);
     cpu.run_cycle();
