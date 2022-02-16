@@ -168,6 +168,128 @@ fn test_add_vx_kk() {
 }
 
 #[test]
+fn test_ld_vx_vy() {
+    // 0x200: LD 0x2 0xBC
+    // 0x202: LD 0x5 0x2
+    // 0x204: Dummy Instruction
+    const ROM: [u8; 6] = [0x62, 0xBC, 0x85, 0x20, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x5;
+    const EXPECTED_VAL: u8 = 0xBC;
+    const EXPECTED_PC: u16 = 0x204;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_or_vx_vy() {
+    // 0x200: LD 0x1 0xF0
+    // 0x202: LD 0x2 0x0F
+    // 0x204: OR 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xF0, 0x62, 0x0F, 0x82, 0x11, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0xFF;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_and_vx_vy() {
+    // 0x200: LD 0x1 0xAB
+    // 0x202: LD 0x2 0x0D
+    // 0x204: AND 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xAB, 0x62, 0x0D, 0x82, 0x12, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0x09;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_xor_vx_vy() {
+    // 0x200: LD 0x1 0xAB
+    // 0x202: LD 0x2 0x0D
+    // 0x204: XOR 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xAB, 0x62, 0x0D, 0x82, 0x13, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0xA6;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_add_vx_vy() {
+    // 0x200: LD 0x1 0xAB
+    // 0x202: LD 0x2 0x0D
+    // 0x204: ADD 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xAB, 0x62, 0x0D, 0x82, 0x14, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0xB8;
+    const EXPECTED_F_VAL: u8 = 0x0;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.gp_reg[0xF], EXPECTED_F_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_add_vx_vy_overflow() {
+    // 0x200: LD 0x1 0xFE
+    // 0x202: LD 0x2 0xAB
+    // 0x204: ADD 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xFE, 0x62, 0xAB, 0x82, 0x14, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0xA9;
+    const EXPECTED_F_VAL: u8 = 0x1;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.gp_reg[0xF], EXPECTED_F_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
 fn test_ld_i_nnn() {
     // 0x200: LD I 0xDAD
     // 0x202: DUMMY INSTRUCTION

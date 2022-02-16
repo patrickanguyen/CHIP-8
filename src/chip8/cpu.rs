@@ -109,6 +109,26 @@ impl Cpu {
                     handlers::add_vx_kk as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
                 (
+                    InstructionType::LdVxVy,
+                    handlers::ld_vx_vy as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
+                    InstructionType::OrVxVy,
+                    handlers::or_vx_vy as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
+                    InstructionType::AndVxVy,
+                    handlers::and_vx_vy as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
+                    InstructionType::XorVxVy,
+                    handlers::xor_vx_vy as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
+                    InstructionType::AddVxVy,
+                    handlers::add_vx_vy as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
                     InstructionType::LdINnn,
                     handlers::ld_i_nnn as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
