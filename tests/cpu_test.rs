@@ -246,6 +246,50 @@ fn test_xor_vx_vy() {
 }
 
 #[test]
+fn test_add_vx_vy() {
+    // 0x200: LD 0x1 0xAB
+    // 0x202: LD 0x2 0x0D
+    // 0x204: ADD 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xAB, 0x62, 0x0D, 0x82, 0x14, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0xB8;
+    const EXPECTED_F_VAL: u8 = 0x0;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.gp_reg[0xF], EXPECTED_F_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_add_vx_vy_overflow() {
+    // 0x200: LD 0x1 0xFE
+    // 0x202: LD 0x2 0xAB
+    // 0x204: ADD 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xFE, 0x62, 0xAB, 0x82, 0x14, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0xA9;
+    const EXPECTED_F_VAL: u8 = 0x1;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.gp_reg[0xF], EXPECTED_F_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
 fn test_ld_i_nnn() {
     // 0x200: LD I 0xDAD
     // 0x202: DUMMY INSTRUCTION

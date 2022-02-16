@@ -89,6 +89,17 @@ pub fn xor_vx_vy(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Add VX and VY and store result in VX. If overflow, set VF to 1
+pub fn add_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    let sum: u16 = (cpu.gp_reg[instr.x as usize] as u16) + (cpu.gp_reg[instr.y as usize] as u16);
+    cpu.gp_reg[instr.x as usize] = sum as u8;
+
+    // If overflowed, set VF to 1, 0 if not
+    cpu.gp_reg[0xF] = (sum > 0xFF) as u8;
+
+    cpu.pc += 2;
+}
+
 /// Value of register I is set to NNN
 pub fn ld_i_nnn(cpu: &mut Cpu, instr: Instruction) {
     cpu.i_reg = instr.nnn;
