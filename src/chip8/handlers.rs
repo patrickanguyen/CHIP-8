@@ -71,6 +71,12 @@ pub fn ld_vx_vy(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Bitwise OR of VX and VY and store result in VX
+pub fn or_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    cpu.gp_reg[instr.x as usize] |= cpu.gp_reg[instr.y as usize];
+    cpu.pc += 2;
+}
+
 /// Value of register I is set to NNN
 pub fn ld_i_nnn(cpu: &mut Cpu, instr: Instruction) {
     cpu.i_reg = instr.nnn;
