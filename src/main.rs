@@ -74,7 +74,7 @@ pub fn main() -> Result<(), String> {
             cpu.draw_flag = false;
         }
 
-        sleep(Duration::new(0, 50_000_000u32 / 3));
+        sleep(Duration::new(0, 16_666_666));
         // The rest of the game loop goes here...
     }
 
