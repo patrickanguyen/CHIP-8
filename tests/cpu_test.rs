@@ -206,6 +206,26 @@ fn test_or_vx_vy() {
 }
 
 #[test]
+fn test_and_vx_vy() {
+    // 0x200: LD 0x1 0xF0
+    // 0x202: LD 0x2 0x0F
+    // 0x204: AND 0x2 0x1
+    // 0x206: Dummy Instruction
+    const ROM: [u8; 8] = [0x61, 0xAB, 0x62, 0x0D, 0x82, 0x12, 0x00, 0x00];
+    const EXPECTED_REG_NUM: usize = 0x2;
+    const EXPECTED_VAL: u8 = 0x09;
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.gp_reg[EXPECTED_REG_NUM], EXPECTED_VAL);
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
 fn test_ld_i_nnn() {
     // 0x200: LD I 0xDAD
     // 0x202: DUMMY INSTRUCTION
