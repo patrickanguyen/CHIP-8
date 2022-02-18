@@ -137,6 +137,10 @@ impl Cpu {
                     handlers::shr_vx_vy as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
                 (
+                    InstructionType::SubnVxVy,
+                    handlers::subn_vx_vy as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
                     InstructionType::LdINnn,
                     handlers::ld_i_nnn as fn(cpu: &mut Cpu, instr: Instruction),
                 ),

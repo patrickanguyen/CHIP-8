@@ -127,6 +127,20 @@ pub fn shr_vx_vy(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Subtract VY from VX and store the difference in VX. Set VF to 1 if borrow
+pub fn subn_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    let vx: i16 = cpu.gp_reg[instr.x as usize] as i16;
+    let vy: i16 = cpu.gp_reg[instr.y as usize] as i16;
+    let diff = vy - vx;
+
+    cpu.gp_reg[instr.x as usize] = diff as u8;
+
+    // If borrowed, set VF to 0, 1 if not
+    cpu.gp_reg[0xF] = (vx > vy) as u8;
+
+    cpu.pc += 2;
+}
+
 /// Value of register I is set to NNN
 pub fn ld_i_nnn(cpu: &mut Cpu, instr: Instruction) {
     cpu.i_reg = instr.nnn;
