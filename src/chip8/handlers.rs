@@ -154,6 +154,15 @@ pub fn shl_vx_vy(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Skip next instruction if Vx != Vy
+pub fn sne_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    if cpu.gp_reg[instr.x as usize] != cpu.gp_reg[instr.y as usize] {
+        cpu.pc += 4;
+        return;
+    }
+    cpu.pc += 2;
+}
+
 /// Value of register I is set to NNN
 pub fn ld_i_nnn(cpu: &mut Cpu, instr: Instruction) {
     cpu.i_reg = instr.nnn;
@@ -188,11 +197,26 @@ pub fn drw_vx_vy_n(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
-/// Skip next instruction if Vx != Vy
-pub fn sne_vx_vy(cpu: &mut Cpu, instr: Instruction) {
-    if cpu.gp_reg[instr.x as usize] != cpu.gp_reg[instr.y as usize] {
-        cpu.pc += 4;
-        return;
+/// Store registers V0 to VX (inclusive) to main memory starting at I
+pub fn ld_i_vx(cpu: &mut Cpu, instr: Instruction) {
+    let num_registers: usize = (instr.x + 1) as usize;
+
+    for register in 0..num_registers {
+        let mem_index: usize = (cpu.i_reg as usize) + register;
+        cpu.memory[mem_index] = cpu.gp_reg[register];
     }
+
+    cpu.pc += 2;
+}
+
+/// Load memory starting from I register to registers V0 to VX
+pub fn ld_vx_i(cpu: &mut Cpu, instr: Instruction) {
+    let num_registers: usize = (instr.x + 1) as usize;
+
+    for register in 0..num_registers {
+        let mem_index: usize = (cpu.i_reg as usize) + register;
+        cpu.gp_reg[register] = cpu.memory[mem_index];
+    }
+
     cpu.pc += 2;
 }
