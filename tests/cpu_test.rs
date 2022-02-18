@@ -418,6 +418,37 @@ fn test_shl_vx_vy() {
 }
 
 #[test]
+fn test_sne_vx_vy_true() {
+    // 0x200: LD 0x0 0xAB
+    // 0x202: SNE 0x0 0x50
+    // 0x204: Dummy INSTRUCTION
+    const ROM: [u8; 6] = [0x60, 0xAB, 0x90, 0x50, 0x00, 0x00];
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
+fn test_sne_vx_vy_false() {
+    // 0x200: LD 0x0 0xAB
+    // 0x202: LD 0x5 0xAB
+    // 0x204: SNE 0x0 0x50
+    const ROM: [u8; 6] = [0x60, 0xAB, 0x65, 0xAB, 0x90, 0x50];
+    const EXPECTED_PC: u16 = 0x206;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
 fn test_ld_i_nnn() {
     // 0x200: LD I 0xDAD
     // 0x202: DUMMY INSTRUCTION
@@ -450,32 +481,57 @@ fn drw_vx_vy_n() {
 }
 
 #[test]
-fn test_sne_vx_vy_true() {
-    // 0x200: LD 0x0 0xAB
-    // 0x202: SNE 0x0 0x50
-    // 0x204: Dummy INSTRUCTION
-    const ROM: [u8; 6] = [0x60, 0xAB, 0x90, 0x50, 0x00, 0x00];
-    const EXPECTED_PC: u16 = 0x206;
+fn test_ld_i_vx() {
+    // 0x200: LD I 0x500
+    // 0x202: LD 0x0 0x12
+    // 0x204: LD 0x1 0x42
+    // 0x206: LD 0x2 0x10
+    // 0x208: LD 0x3 0x59
+    // 0x20A: LD 0x4 0x8A
+    // 0x20C: LD 0x5 0x4A
+    // 0x20E: LD I 0x5
+    const ROM: [u8; 16] = [
+        0xA5, 0x00, 0x60, 0x12, 0x61, 0x42, 0x62, 0x10, 0x63, 0x59, 0x64, 0x8A, 0x65, 0x4A, 0xF6,
+        0x55,
+    ];
+    const NUM_INSTRUCTIONS: usize = ROM.len() / 2;
+
+    const EXPECTED_VX: usize = 5;
+    const EXPECTED_MEM_VALS: [u8; 6] = [0x12, 0x42, 0x10, 0x59, 0x8A, 0x4A];
+    const EXPECTED_PC: u16 = 0x210;
 
     let mut cpu = Cpu::new(&ROM);
-    cpu.run_cycle();
-    cpu.run_cycle();
+
+    for _ in 0..NUM_INSTRUCTIONS {
+        cpu.run_cycle();
+    }
 
     assert_eq!(cpu.pc, EXPECTED_PC);
+
+    for reg_num in 0..EXPECTED_VX + 1 {
+        let index: usize = (cpu.i_reg as usize) + reg_num;
+        assert_eq!(cpu.memory[index], EXPECTED_MEM_VALS[reg_num]);
+    }
 }
 
 #[test]
-fn test_sne_vx_vy_false() {
-    // 0x200: LD 0x0 0xAB
-    // 0x202: LD 0x5 0xAB
-    // 0x204: SNE 0x0 0x50
-    const ROM: [u8; 6] = [0x60, 0xAB, 0x65, 0xAB, 0x90, 0x50];
-    const EXPECTED_PC: u16 = 0x206;
+fn test_ld_vx_i() {
+    // 0x200: LD I 0x200
+    // 0x202: LD 0x3, I
+    const ROM: [u8; 4] = [0xA2, 0x00, 0xF3, 0x65];
+
+    const EXPECTED_VX: usize = 3;
+    const EXPECTED_REG_VALS: [u8; 4] = [0xA2, 0x00, 0xF3, 0x65];
+    const EXPECTED_PC: u16 = 0x204;
 
     let mut cpu = Cpu::new(&ROM);
-    cpu.run_cycle();
+
     cpu.run_cycle();
     cpu.run_cycle();
 
     assert_eq!(cpu.pc, EXPECTED_PC);
+
+    for reg_num in 0..EXPECTED_VX + 1 {
+        assert_eq!(cpu.gp_reg[reg_num], EXPECTED_REG_VALS[reg_num]);
+    }
 }
