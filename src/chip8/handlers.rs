@@ -114,6 +114,19 @@ pub fn sub_vx_vy(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Shift right VX by 1, store least significant bit of VX in VF
+pub fn shr_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    let vx: u8 = cpu.gp_reg[instr.x as usize];
+
+    // Store least significant bit of VX in VF
+    cpu.gp_reg[0xF] = vx & 0x01;
+
+    // Shift right VX by 1
+    cpu.gp_reg[instr.x as usize] = vx >> 1;
+
+    cpu.pc += 2;
+}
+
 /// Value of register I is set to NNN
 pub fn ld_i_nnn(cpu: &mut Cpu, instr: Instruction) {
     cpu.i_reg = instr.nnn;
