@@ -100,6 +100,60 @@ pub fn add_vx_vy(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+/// Subtract VY from VX and store difference in VX, If borrowed, set VF to 0
+pub fn sub_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    let vx: i16 = cpu.gp_reg[instr.x as usize] as i16;
+    let vy: i16 = cpu.gp_reg[instr.y as usize] as i16;
+    let diff = vx - vy;
+
+    cpu.gp_reg[instr.x as usize] = diff as u8;
+
+    // If borrowed, set VF to 0, 1 if not
+    cpu.gp_reg[0xF] = (vx > vy) as u8;
+
+    cpu.pc += 2;
+}
+
+/// Shift right VX by 1, store least significant bit of VX in VF
+pub fn shr_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    let vx: u8 = cpu.gp_reg[instr.x as usize];
+
+    // Store least significant bit of VX in VF
+    cpu.gp_reg[0xF] = vx & 0x01;
+
+    // Shift right VX by 1
+    cpu.gp_reg[instr.x as usize] = vx >> 1;
+
+    cpu.pc += 2;
+}
+
+/// Subtract VY from VX and store the difference in VX. Set VF to 1 if borrow
+pub fn subn_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    let vx: i16 = cpu.gp_reg[instr.x as usize] as i16;
+    let vy: i16 = cpu.gp_reg[instr.y as usize] as i16;
+    let diff = vy - vx;
+
+    cpu.gp_reg[instr.x as usize] = diff as u8;
+
+    // If borrowed, set VF to 0, 1 if not
+    cpu.gp_reg[0xF] = (vx > vy) as u8;
+
+    cpu.pc += 2;
+}
+
+/// Shift left VX by 1, store most significant bit of VX in VF
+pub fn shl_vx_vy(cpu: &mut Cpu, instr: Instruction) {
+    let vx: u8 = cpu.gp_reg[instr.x as usize];
+
+    // Store most significant bit of VX in VF
+    cpu.gp_reg[0xF] = (vx >> 7) & 1;
+
+    // Shift left VX by 1
+    cpu.gp_reg[instr.x as usize] = vx << 1;
+
+    cpu.pc += 2;
+}
+
 /// Value of register I is set to NNN
 pub fn ld_i_nnn(cpu: &mut Cpu, instr: Instruction) {
     cpu.i_reg = instr.nnn;
