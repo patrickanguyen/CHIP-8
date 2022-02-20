@@ -23,7 +23,7 @@ pub fn main() -> Result<(), String> {
 
     let window = video_subsystem
         .window(
-            "CHIP-8 Emulator",
+            "CHIP-8",
             (constants::DISPLAY_WIDTH * constants::DISPLAY_SCALE) as u32,
             (constants::DISPLAY_HEIGHT * constants::DISPLAY_SCALE) as u32,
         )
