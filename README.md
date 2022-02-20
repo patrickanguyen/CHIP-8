@@ -15,7 +15,7 @@ I developed this project mostly to learn more about Rust and developing emulator
 cargo run --release
 ```
 
-3. Run tests:
+3. Run Tests:
 ```
 cargo test
 ```
