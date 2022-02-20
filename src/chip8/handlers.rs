@@ -27,7 +27,7 @@ pub fn call_nnn(cpu: &mut Cpu, instr: Instruction) {
 
 /// Skip next instruction if Vx == kk
 pub fn se_vx_kk(cpu: &mut Cpu, instr: Instruction) {
-    if cpu.gp_reg[instr.x as usize] == instr.kk as u8 {
+    if cpu.gp_reg[instr.x as usize] == instr.kk {
         cpu.pc += 4;
         return;
     }
@@ -36,7 +36,7 @@ pub fn se_vx_kk(cpu: &mut Cpu, instr: Instruction) {
 
 /// Skip next instruction if Vx != kk
 pub fn sne_vx_kk(cpu: &mut Cpu, instr: Instruction) {
-    if cpu.gp_reg[instr.x as usize] != instr.kk as u8 {
+    if cpu.gp_reg[instr.x as usize] != instr.kk {
         cpu.pc += 4;
         return;
     }
@@ -54,13 +54,13 @@ pub fn se_vx_vy(cpu: &mut Cpu, instr: Instruction) {
 
 /// Load value NN to register VX
 pub fn ld_vx_kk(cpu: &mut Cpu, instr: Instruction) {
-    cpu.gp_reg[instr.x as usize] = instr.kk as u8;
+    cpu.gp_reg[instr.x as usize] = instr.kk;
     cpu.pc += 2;
 }
 
 /// Add value kk to register VX and store result in VX
 pub fn add_vx_kk(cpu: &mut Cpu, instr: Instruction) {
-    let sum = cpu.gp_reg[instr.x as usize] as u16 + instr.kk;
+    let sum: u16 = (cpu.gp_reg[instr.x as usize] as u16) + (instr.kk as u16);
     cpu.gp_reg[instr.x as usize] = sum as u8;
     cpu.pc += 2;
 }
@@ -177,12 +177,12 @@ pub fn drw_vx_vy_n(cpu: &mut Cpu, instr: Instruction) {
     cpu.gp_reg[0xf] = 0;
 
     for row in 0..instr.n {
-        let pixel = cpu.memory[(cpu.i_reg + row) as usize];
+        let pixel = cpu.memory[(cpu.i_reg + (row as u16)) as usize];
         for bit in 0..8 {
             // Check if the bit in pixel is set
             if pixel & (0x80 >> bit) > 0 {
                 let x_idx = (x + bit) as usize % DISPLAY_WIDTH;
-                let y_idx = (y + row) as usize % DISPLAY_HEIGHT;
+                let y_idx = (y + (row as u16)) as usize % DISPLAY_HEIGHT;
 
                 // Set VF to 1 if pixel in display buffer changed from 1 to 0
                 if cpu.display_buffer[x_idx][y_idx] == 1 {

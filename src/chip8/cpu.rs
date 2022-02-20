@@ -199,12 +199,12 @@ impl Cpu {
 
         Instruction {
             raw_instr: instr,
-            op: (instr & 0xf000) >> 12,
+            op: ((instr & 0xf000) >> 12) as u8,
             nnn: instr & 0xfff,
-            n: instr & 0xf,
-            x: (instr & 0xf00) >> 8,
-            y: (instr & 0xf0) >> 4,
-            kk: instr & 0xff,
+            n: (instr & 0xf) as u8,
+            x: ((instr & 0xf00) >> 8) as u8,
+            y: ((instr & 0xf0) >> 4) as u8,
+            kk: (instr & 0xff) as u8,
         }
     }
 
