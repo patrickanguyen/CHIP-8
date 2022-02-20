@@ -164,6 +164,10 @@ impl Cpu {
                     InstructionType::LdVxI,
                     handlers::ld_vx_i as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
+                (
+                    InstructionType::LdBVx,
+                    handlers::ld_b_vx as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
             ]),
         }
     }

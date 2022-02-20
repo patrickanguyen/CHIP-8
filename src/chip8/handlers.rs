@@ -220,3 +220,19 @@ pub fn ld_vx_i(cpu: &mut Cpu, instr: Instruction) {
 
     cpu.pc += 2;
 }
+
+pub fn ld_b_vx(cpu: &mut Cpu, instr: Instruction) {
+    let vx = cpu.gp_reg[instr.x as usize];
+
+    // Get hundreds, tens, and ones digit from VX
+    let hundreds_digit: u8 = vx / 100;
+    let ones_digit: u8 = vx % 10;
+    let tens_digit: u8 = (vx - (hundreds_digit * 100)) / 10;
+
+    // Store digits to memory starting at I
+    cpu.memory[cpu.i_reg as usize] = hundreds_digit;
+    cpu.memory[(cpu.i_reg + 1) as usize] = tens_digit;
+    cpu.memory[(cpu.i_reg + 2) as usize] = ones_digit;
+
+    cpu.pc += 2;
+}
