@@ -2,7 +2,7 @@
 
 > This project is still a WIP and is subject to change.
 
-[CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) is an interpreted programming language first used on 8-bit computer systems in the mid 1970's. It was make video game development easier on these systems.
+[CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) is an interpreted programming language first used on 8-bit computer systems in the mid-1970's. It was used to make video game development easier on these systems.
 
 I developed this project mostly to learn more about Rust and developing emulators.
 
