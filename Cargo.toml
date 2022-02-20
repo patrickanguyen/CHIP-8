@@ -14,4 +14,4 @@ name = "chip8"
 path = "src/main.rs"
 
 [dependencies]
-sdl2 = "0.35"
+sdl2 = "0.35.2"
