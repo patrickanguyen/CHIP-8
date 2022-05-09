@@ -1,5 +1,5 @@
 use super::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH};
-use super::cpu::Cpu;
+use super::Cpu;
 use super::instructions::Instruction;
 
 /// Return from subroutine

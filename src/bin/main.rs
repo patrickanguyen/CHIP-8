@@ -1,20 +1,40 @@
 extern crate sdl2;
 
+use std::env::args;
+use std::fs;
+use std::process;
+use std::thread::sleep;
+
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use std::time::Duration;
 
-use std::fs;
-use std::thread::sleep;
+use chip8::constants;
+use chip8::cpu::Cpu;
 
-use chip8_lib::chip8::constants;
-use chip8_lib::chip8::cpu::Cpu;
+fn read_rom(args: Vec<String>) -> Result<Vec<u8>, String> {
+    if args.len() < 2 {
+        return Err(String::from("Not enough arguments"));
+    }
+
+    let rom_path = &args[1];
+    let rom = fs::read(rom_path);
+
+    match rom {
+        Ok(rom) => Ok(rom),
+        Err(err) => Err(err.to_string()),
+    }
+}
 
 pub fn main() -> Result<(), String> {
-    let rom_path = "roms/test_opcode.ch8";
-    let rom: Vec<u8> = fs::read(rom_path).expect("Failed to open ROM");
+    let args: Vec<String> = args().collect();
+
+    let rom: Vec<u8> = read_rom(args).unwrap_or_else(|err| {
+        println!("Error reading ROM: {}", err);
+        process::exit(1);
+    });
 
     let mut cpu = Cpu::new(&rom);
 
