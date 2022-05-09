@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 
+mod handlers;
+mod instructions;
+
 use super::constants;
-use super::handlers;
-use super::instructions::{Instruction, InstructionType};
+use instructions::{Instruction, InstructionType};
 
 pub struct Cpu {
     pub memory: [u8; constants::MEMORY_SIZE],

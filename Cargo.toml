@@ -6,12 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "chip8_lib"
-path = "src/lib.rs"
+name = "chip8"
+path = "src/lib/lib.rs"
 
 [[bin]]
-name = "chip8"
-path = "src/main.rs"
+name = "chip8-emulator"
+path = "src/bin/main.rs"
 
 [dependencies]
 sdl2 = "0.35.2"

@@ -7,7 +7,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in library 'chip8_lib'",
+            "name": "Debug unit tests in library 'chip8'",
             "cargo": {
                 "args": [
                     "test",
@@ -16,7 +16,7 @@
                     "--package=chip8-emulator"
                 ],
                 "filter": {
-                    "name": "chip8_lib",
+                    "name": "chip8",
                     "kind": "lib"
                 }
             },
@@ -26,34 +26,36 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'chip8'",
+            "name": "Debug executable 'chip8-emulator'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=chip8",
+                    "--bin=chip8-emulator",
                     "--package=chip8-emulator"
                 ],
                 "filter": {
-                    "name": "chip8",
+                    "name": "chip8-emulator",
                     "kind": "bin"
                 }
             },
-            "args": [],
+            "args": [
+                "roms/test_opcode.ch8"
+            ],
             "cwd": "${workspaceFolder}"
         },
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'chip8'",
+            "name": "Debug unit tests in executable 'chip8-emulator'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=chip8",
+                    "--bin=chip8-emulator",
                     "--package=chip8-emulator"
                 ],
                 "filter": {
-                    "name": "chip8",
+                    "name": "chip8-emulator",
                     "kind": "bin"
                 }
             },

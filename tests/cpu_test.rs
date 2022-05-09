@@ -1,4 +1,4 @@
-use chip8_lib::chip8::cpu::Cpu;
+use chip8::cpu::Cpu;
 
 #[test]
 fn test_ret() {
