@@ -8,3 +8,4 @@ pub const PROGRAM_START: u16 = 0x200;
 pub const DISPLAY_HEIGHT: usize = 32;
 pub const DISPLAY_WIDTH: usize = 64;
 pub const DISPLAY_SCALE: usize = 10;
+pub const WINDOW_TITLE: &str = "CHIP-8";
