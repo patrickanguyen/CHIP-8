@@ -4,6 +4,7 @@ mod handlers;
 mod instructions;
 
 use super::constants;
+use super::state::State;
 use instructions::{Instruction, InstructionType};
 
 pub struct Cpu {
@@ -175,7 +176,7 @@ impl Cpu {
     }
 
     /// Emulate clock cycle
-    pub fn run_cycle(&mut self) {
+    pub fn run_cycle(&mut self) -> State {
         // Fetch
         let instr: Instruction = self.fetch();
 
@@ -191,7 +192,9 @@ impl Cpu {
         // Execute
         self.execute(instr_type, instr);
 
-        // Handle timers
+        // TODO: Handle timers
+
+        State::new(&mut self.draw_flag, self.display_buffer)
     }
 
     /// Fetch instruction from memory

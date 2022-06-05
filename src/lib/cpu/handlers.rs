@@ -1,6 +1,6 @@
 use super::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH};
-use super::Cpu;
 use super::instructions::Instruction;
+use super::Cpu;
 
 /// Return from subroutine
 pub fn ret(cpu: &mut Cpu, _instr: Instruction) {
