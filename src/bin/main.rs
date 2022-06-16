@@ -8,8 +8,8 @@ use chip8::gui::{events::Events, renderer::Renderer, window::Window};
 use chip8::Chip8;
 
 fn read_rom(args: Vec<String>) -> Result<Vec<u8>, String> {
-    if args.len() < 2 {
-        return Err(String::from("Not enough arguments"));
+    if args.len() != 2 {
+        return Err(String::from("Invalid amount of arguments"));
     }
 
     let rom_path = &args[1];
@@ -21,7 +21,7 @@ fn read_rom(args: Vec<String>) -> Result<Vec<u8>, String> {
     }
 }
 
-pub fn main() -> Result<(), String> {
+pub fn main() {
     let args: Vec<String> = args().collect();
 
     let rom: Vec<u8> = read_rom(args).unwrap_or_else(|err| {
@@ -29,7 +29,7 @@ pub fn main() -> Result<(), String> {
         process::exit(1);
     });
 
-    let sdl_context = sdl2::init()?;
+    let sdl_context = sdl2::init().unwrap();
     let window = Window::new(&sdl_context);
 
     let mut chip8 = Chip8::new(&rom);
@@ -39,5 +39,4 @@ pub fn main() -> Result<(), String> {
     renderer.clear_screen();
     events.handle_events(&mut chip8, &mut renderer);
 
-    Ok(())
 }
