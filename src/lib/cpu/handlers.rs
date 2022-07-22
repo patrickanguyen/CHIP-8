@@ -2,6 +2,18 @@ use super::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH};
 use super::instructions::Instruction;
 use super::Cpu;
 
+use rand::Rng;
+
+/// Clear the display
+pub fn cls(cpu: &mut Cpu, _instr: Instruction) {
+    for row in cpu.display_buffer.iter_mut() {
+        for cell in row.iter_mut() {
+            *cell = 0;
+        }
+    }
+    cpu.pc += 2;
+}
+
 /// Return from subroutine
 pub fn ret(cpu: &mut Cpu, _instr: Instruction) {
     // Pop from stack
@@ -163,9 +175,23 @@ pub fn sne_vx_vy(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+pub fn jmp_v0_nnn(cpu: &mut Cpu, instr: Instruction) {
+    let v0: u16 = cpu.gp_reg[0x0] as u16;
+    cpu.pc = v0 + instr.nnn;
+}
+
 /// Value of register I is set to NNN
 pub fn ld_i_nnn(cpu: &mut Cpu, instr: Instruction) {
     cpu.i_reg = instr.nnn;
+    cpu.pc += 2;
+}
+
+/// Generate random value from 0 to 255 and do bitwise AND with NN, store to VX
+pub fn rnd_vx_nn(cpu: &mut Cpu, instr: Instruction) {
+    let mut rng = rand::thread_rng();
+    let rand_byte: u8 = rng.gen();
+
+    cpu.gp_reg[instr.x as usize] = rand_byte & instr.kk;
     cpu.pc += 2;
 }
 
@@ -197,6 +223,58 @@ pub fn drw_vx_vy_n(cpu: &mut Cpu, instr: Instruction) {
     cpu.pc += 2;
 }
 
+pub fn skp_vx(cpu: &mut Cpu, instr: Instruction) {}
+
+pub fn sknp_vx(cpu: &mut Cpu, instr: Instruction) {}
+
+pub fn ld_vx_dt(cpu: &mut Cpu, instr: Instruction) {
+    cpu.gp_reg[instr.x as usize] = cpu.delay_timer;
+    cpu.pc += 2;
+}
+
+pub fn ld_vx_k(cpu: &mut Cpu, instr: Instruction) {}
+
+pub fn ld_dt_vx(cpu: &mut Cpu, instr: Instruction) {
+    let vx = cpu.gp_reg[instr.x as usize];
+    cpu.delay_timer = vx;
+    cpu.pc += 2;
+}
+
+pub fn ld_st_vx(cpu: &mut Cpu, instr: Instruction) {
+    let vx = cpu.gp_reg[instr.x as usize];
+    cpu.sound_timer = vx;
+    cpu.pc += 2;
+}
+
+///
+pub fn add_i_vx(cpu: &mut Cpu, instr: Instruction) {
+    cpu.i_reg += cpu.gp_reg[instr.x as usize] as u16;
+    cpu.pc += 2;
+}
+
+pub fn ld_f_vx(cpu: &mut Cpu, instr: Instruction) {
+    let vx = cpu.gp_reg[instr.x as usize];
+    cpu.i_reg = (vx * 0x05) as u16;
+    cpu.pc += 2;
+}
+
+/// Store decimal in VX and put in 3 memory slots starting at I
+pub fn ld_b_vx(cpu: &mut Cpu, instr: Instruction) {
+    let vx = cpu.gp_reg[instr.x as usize];
+
+    // Get hundreds, tens, and ones digit from VX
+    let hundreds_digit: u8 = vx / 100;
+    let ones_digit: u8 = vx % 10;
+    let tens_digit: u8 = (vx - (hundreds_digit * 100)) / 10;
+
+    // Store digits to memory starting at I
+    cpu.memory[cpu.i_reg as usize] = hundreds_digit;
+    cpu.memory[(cpu.i_reg + 1) as usize] = tens_digit;
+    cpu.memory[(cpu.i_reg + 2) as usize] = ones_digit;
+
+    cpu.pc += 2;
+}
+
 /// Store registers V0 to VX (inclusive) to main memory starting at I
 pub fn ld_i_vx(cpu: &mut Cpu, instr: Instruction) {
     let num_registers: usize = (instr.x + 1) as usize;
@@ -217,22 +295,6 @@ pub fn ld_vx_i(cpu: &mut Cpu, instr: Instruction) {
         let mem_index: usize = (cpu.i_reg as usize) + register;
         cpu.gp_reg[register] = cpu.memory[mem_index];
     }
-
-    cpu.pc += 2;
-}
-
-pub fn ld_b_vx(cpu: &mut Cpu, instr: Instruction) {
-    let vx = cpu.gp_reg[instr.x as usize];
-
-    // Get hundreds, tens, and ones digit from VX
-    let hundreds_digit: u8 = vx / 100;
-    let ones_digit: u8 = vx % 10;
-    let tens_digit: u8 = (vx - (hundreds_digit * 100)) / 10;
-
-    // Store digits to memory starting at I
-    cpu.memory[cpu.i_reg as usize] = hundreds_digit;
-    cpu.memory[(cpu.i_reg + 1) as usize] = tens_digit;
-    cpu.memory[(cpu.i_reg + 2) as usize] = ones_digit;
 
     cpu.pc += 2;
 }

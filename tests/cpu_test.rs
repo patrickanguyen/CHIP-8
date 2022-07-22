@@ -1,6 +1,24 @@
 use chip8::cpu::Cpu;
 
 #[test]
+fn test_cls() {
+    // 0x200: CLS
+    const ROM: [u8; 2] = [0x00, 0xE0];
+    const EXPECTED_PC: u16 = 0x202;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+
+    for row in cpu.display_buffer {
+        for cell in row {
+            assert_eq!(cell, 0);
+        }
+    }
+}
+
+#[test]
 fn test_ret() {
     // 0x200: CALL 0x204
     // 0x202: DUMMY INSTRUCTION
@@ -464,6 +482,20 @@ fn test_ld_i_nnn() {
 }
 
 #[test]
+fn test_rnd_vx_nn() {
+    // 0x200: RND 0x2 0xFF
+    //0x202: Dummy Instruction
+
+    const ROM: [u8; 4] = [0xC2, 0xFF, 0x00, 0x00];
+    const EXPECTED_PC: u16 = 0x202;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+}
+
+#[test]
 fn drw_vx_vy_n() {
     // 0x200: LD I 0x006
     // 0x202: DRW 0x0 0x0 0x5
@@ -478,6 +510,27 @@ fn drw_vx_vy_n() {
     assert_eq!(cpu.pc, EXPECTED_PC);
     assert_eq!(cpu.gp_reg[0xf], EXPECTED_VF);
     // TODO: ADD ASSERT FOR DISPLAY_BUFFER
+}
+
+#[test]
+fn test_add_i_vx() {
+
+}
+
+#[test]
+fn test_ld_f_vx() {
+    // 0x200: LD 0x0, 0x23
+    // 0x202: LD F, 0x0
+    const ROM: [u8; 4] = [0x60, 0x23, 0xF0, 0x29];
+    const EXPECTED_PC: u16 = 0x204;
+    const EXPECTED_I_VAL: u16 = 0xAF;
+
+    let mut cpu = Cpu::new(&ROM);
+    cpu.run_cycle();
+    cpu.run_cycle();
+
+    assert_eq!(cpu.pc, EXPECTED_PC);
+    assert_eq!(cpu.i_reg, EXPECTED_I_VAL);
 }
 
 #[test]

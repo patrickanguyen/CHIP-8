@@ -21,8 +21,8 @@ cargo test
 ```
 
 ## To Do List
-- [ ] Implement all CHIP-8 instructions
-- [ ] Refactor SDL-2 window code
+- [X] Implement all CHIP-8 instructions
+- [X] Refactor SDL-2 window code
 - [ ] Command-line arguments
 - [ ] Keyboard support
 - [ ] Timer support

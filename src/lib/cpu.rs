@@ -80,6 +80,10 @@ impl Cpu {
 
             instructions: HashMap::from([
                 (
+                    InstructionType::Cls,
+                    handlers::cls as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
                     InstructionType::Ret,
                     handlers::ret as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
@@ -156,6 +160,14 @@ impl Cpu {
                     handlers::ld_i_nnn as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
                 (
+                    InstructionType::JmpV0Nnn,
+                    handlers::jmp_v0_nnn as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
+                    InstructionType::RndVxKk,
+                    handlers::rnd_vx_nn as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
                     InstructionType::DrwVxVyN,
                     handlers::drw_vx_vy_n as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
@@ -170,6 +182,10 @@ impl Cpu {
                 (
                     InstructionType::LdBVx,
                     handlers::ld_b_vx as fn(cpu: &mut Cpu, instr: Instruction),
+                ),
+                (
+                    InstructionType::LdFVx,
+                    handlers::ld_f_vx as fn(cpu: &mut Cpu, instr: Instruction),
                 ),
             ]),
         }

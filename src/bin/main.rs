@@ -38,5 +38,4 @@ pub fn main() {
 
     renderer.clear_screen();
     events.handle_events(&mut chip8, &mut renderer);
-
 }
